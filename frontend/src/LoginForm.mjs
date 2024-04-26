@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const SignupForm = () => {
-  const [name, setName] = useState("");
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission here (e.g., send data to server)
-    alert(`Name: ${name}, Email: ${email}, Password: ${password}`);
-    setName("");
+    console.log(`Email: ${email}, Password: ${password}`);
     setEmail("");
     setPassword("");
   };
@@ -21,18 +18,7 @@ const SignupForm = () => {
     <div className="vh-100 d-flex justify-content-center align-items-center bg-aqua-50">
       <div className="bg-light p-5 rounded w-50">
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formBasicName">
-            <h2>Sign Up Form</h2>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
@@ -42,7 +28,7 @@ const SignupForm = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formBasicPassword">
+          <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
@@ -51,9 +37,9 @@ const SignupForm = () => {
               placeholder="Password"
             />
           </Form.Group>
-          <br></br>
+
           <Button variant="primary" type="submit">
-            Sign Up
+            Log In
           </Button>
         </Form>
       </div>
@@ -61,4 +47,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default LoginForm;

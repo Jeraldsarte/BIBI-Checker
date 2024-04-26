@@ -4,8 +4,8 @@
     "dbConfig": {
       "driver": "mysql",
       "user": "bisublar_bibic",
-      "database": "isublar_bibic",
-      "password": "isublar_bibic",
+      "database": "bisublar_bibic",
+      "password": "bisublar_bibic",
       "host": "192.185.48.158",
       "port": "3306",
       "timezone": "+08:00"
