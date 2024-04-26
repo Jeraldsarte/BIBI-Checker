@@ -1,6 +1,6 @@
 import React from "react";
 import SignupForm from "./SignupForm";
-import LoginForm from "./LoginForm.mjs";
+import LoginForm from "./LoginForm.jsx";
 import { Nav, Container } from "react-bootstrap";
 
 const App = () => {
