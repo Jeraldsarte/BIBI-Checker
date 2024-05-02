@@ -18,7 +18,7 @@ sequelize.authenticate().then(res => {
     console.log(`Error: ${err}`);
 });
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+//db.Sequelize = Sequelize;
 db.MultiQueryResult = (arr) => {
     var output = {};
     for (var root = 0; root < arr.length - 1; root++) {

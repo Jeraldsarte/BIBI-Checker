@@ -1,5 +1,5 @@
 {
-  "baseurl": "http://localhost:5001/",
+  "baseurl": "http://localhost:3001",
   "Connection": {
     "dbConfig": {
       "driver": "mysql",

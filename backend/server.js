@@ -1,50 +1,44 @@
-const jwt = require("jsonwebtoken");
-const db = require("../backend/database/config");
-// const jwt = require("jsonwebtoken"); // comment double entry
-require('dotenv').config()
+  const express = require("express");
+  const cors = require("cors");
+  const bodyParser = require("body-parser");
+  //  const session = require("express-session");
+  const path = require("path");
+  // .env
 
-let security = {};
+  require("dotenv").config();
+  const app = express();
+  const port = process.env.PORT || 3001;
+  const corsOptions = {
+    origin: true,
+    credentials: true,
+  };
+  const timezone = "Asia/Manila";
+  process.env.TZ = timezone;
 
-security.verifyAutheticity = (req, res, next) => {
-    const bearerHeader = req.headers[process.env.HEADERKEY];
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        jwt.verify(bearerToken, process.env.PUBLICVAPIDKEY, (err, decoded) => {
-            if (err) {
-                res.set('Content-Type', 'text/plain')
-                res.send({ error: true, message: "Error Code 502: Forbidden Access. Please re-login" });
-            } else {
-                if (decoded.data) {
-                    db.sequelize.query('CALL sp_users_login2(:username, :password)', {
-                        replacements: {
-                            username: decoded.data.username,
-                            password: decoded.data.password
-                        }
-                    }).then(data => {
-                        if (data.length > 0) {
-                            next();
-                        } else {
-                            res.set('Content-Type', 'text/plain')
-                            res.send({ error: true, message: "Error Code 505: Forbidden Access. Please re-login" });
-                        }
-                    }).catch(err => {
-                        res.send({ error: true, message: `Error 504: ${err}` });
-                    });
-                } else {
-                    res.send({ error: true, message: "Error Code 503: Forbidden Access. Please re-login" });
-                }
-            }
-        });
-    } else {
-        res.set('Content-Type', 'text/plain')
-        res.send({ error: true, message: "Error Code 501: Forbidden Access. Please re-login" });
-    }
-}
+  app.use(bodyParser.json());
+  app.use(cors(corsOptions));
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(express.static(path.join(__dirname, 'public')));
+  // app.use(session({ secret: process.env.PUBLICVAPIDKEY, resave: false, saveUninitialized: false }))
 
-security.verifyCSRF = (err, req, res, next) => {
-    if (err.code !== 'EBADCSRFTOKEN') return next(err)
-    res.status(401).send({ error: true, message: "csrf-533-252: Token expired or not is not found. Please reload form" });
-}
+  const Auth = require("./routes/auth.routes");
+  const addUsers = require("./routes/addUsers.routes");
 
-module.exports = security;
+  // File Upload API
+  const fileUpload = require("express-fileupload");
+  app.use(fileUpload());
+  app.use(express.static("public"));
+  // Email Sender
+
+  app.use("/auth", Auth);
+  app.use('/addusers', addUsers);
+
+  app.get("/", function (req, res) {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Welcome to BIBI CHECKER");
+  });
+
+  app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
+  });

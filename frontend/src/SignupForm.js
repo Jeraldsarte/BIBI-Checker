@@ -1,74 +1,238 @@
+import axios from "axios";
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+import "./SignupForm.css";
 
-const SignupForm = () => {
+Modal.setAppElement("#root");
+
+const Register = () => {
+  // Content of the registration page
+
+  const [profileID, setID] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  //const [position, setPosition] = useState('');
+  const [address, setAddress] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [addingError, setAddingError] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
+  const [successModalIsOpen, setSuccessModalIsOpen] = useState(false);
+  const [forModal, setForModal] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission here (e.g., send data to server)
-    alert(`Name: ${name}, Email: ${email}, Password: ${password}`);
-    setName("");
-    setEmail("");
-    setPassword("");
+  const handleProfileIDChange = (e) => {
+    const value = e.target.value;
+    const formattedValue = value.replace(/\D/g, ""); // Remove non-digit characters
+
+    setID(formattedValue);
+    setAddingError("");
   };
 
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+    setAddingError("");
+  };
+
+  /*const handlePositionChange = (e) => {
+    setPosition(e.target.value);
+    setAddingError('');
+  };8*/
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+    setAddingError("");
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    setAddingError("");
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setAddingError("");
+  };
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+
+    if (profileID.trim() === "") {
+      const errorMessage = "Please enter your ID No.";
+      setAddingError(errorMessage);
+      return;
+    }
+
+    if (name.trim() === "") {
+      const errorMessage = "Please enter your fullname";
+      setAddingError(errorMessage);
+      return;
+    }
+
+    /*if (position.trim() === '') {
+      const errorMessage = 'Please enter your position';
+      setAddingError(errorMessage);
+      return;
+    }*/
+
+    if (address.trim() === "") {
+      const errorMessage = "Please enter your address.";
+      setAddingError(errorMessage);
+      return;
+    }
+
+    if (username.trim() === "") {
+      const errorMessage = "Please enter your username";
+      setAddingError(errorMessage);
+      return;
+    }
+
+    if (password.trim() === "") {
+      const errorMessage = "Please enter your password";
+      setAddingError(errorMessage);
+      return;
+    }
+
+    setLoading(true);
+
+    axios
+      .post("http://localhost:3001/api/add", {
+        id_no: profileID,
+        name,
+        address,
+        username,
+        password,
+      })
+      .then((response) => {
+        //console.log(response.data);
+        const { error, message } = response.data;
+
+        if (error) {
+          if (message === "Oops! Employee does not exist!") {
+            setForModal(message);
+            setErrorModalIsOpen(true);
+            setLoading(false);
+          } else {
+            setAddingError(message);
+            setLoading(false);
+          }
+        } else {
+          setForModal(message);
+          setSuccessModalIsOpen(true);
+          setLoading(false);
+        }
+      });
+  };
+
+  const handleCloseErrorModal = () => {
+    setErrorModalIsOpen(false);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setSuccessModalIsOpen(false);
+
+    setID("");
+    setName("");
+    //setPosition('');
+    setAddress("");
+    setUsername("");
+    setPassword("");
+    navigate("/");
+  };
+
+
   return (
-    <div className="vh-100 d-flex justify-content-center align-items-center bg-aqua-50">
-      <div className="bg-light p-5 rounded w-50">
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formFirstName">
-            <h2>Sign Up Form</h2>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
+    <form>
+      {/* <div className="register-info-container"> */}
+        <div className="register-info">
+          <h2>Sign Up</h2>
+          <div className="register-info-input">
+            <input
               type="text"
+              placeholder="ID No."
+              value={profileID}
+              onChange={handleProfileIDChange}
+            />
+            <input
+              type="text"
+              placeholder="Full Name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter name"
+              onChange={handleNameChange}
             />
-          </Form.Group>
-
-          <Form.Group controlId="formEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email"
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formRole">
-            <Form.Label>Role</Form.Label>
-            <Form.Control
+            
+            <input
               type="text"
-              value={RadioNodeList}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Admin/user"
+              placeholder="Address"
+              value={address}
+              onChange={handleAddressChange}
             />
-          </Form.Group>
-
-          <Form.Group controlId="formPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+            <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
             />
-          </Form.Group>
-          <br></br>
-          <Button variant="primary" type="submit">
-            Sign Up
-          </Button>
-        </Form>
-      </div>
-    </div>
+            {addingError && <p className="adding-error">{addingError}</p>}
+          </div>
+          <button
+            type="submit"
+            className="save-button"
+            onClick={handleAdd}
+            disabled={isLoading}
+          >
+            {isLoading ? <div className="loader"></div> : "Register"}
+          </button>
+          {/* <button onClick={handleLogout}>Logout</button> */}
+        </div>
+      {/* </div> */}
+      <Modal
+        isOpen={errorModalIsOpen}
+        onRequestClose={handleCloseErrorModal}
+        overlayClassName="custom-overlay"
+        contentLabel="Error Modal"
+        className="universal-modal"
+      >
+        <div className="modal-header">
+          <span className="error-icon">
+            <FontAwesomeIcon icon={faTimes} />
+          </span>
+          <h2 className="universal-title">Error!</h2>
+        </div>
+        <p>{forModal}</p>
+        <button className="ok-button" onClick={handleCloseErrorModal}>
+          OK
+        </button>
+      </Modal>
+
+      <Modal
+        isOpen={successModalIsOpen}
+        onRequestClose={handleCloseSuccessModal}
+        overlayClassName="custom-overlay"
+        contentLabel="Success Modal"
+        className="universal-modal"
+      >
+        <div className="modal-header">
+          <span className="success-icon">
+            <FontAwesomeIcon icon={faCheckCircle} />
+          </span>
+          <h2 className="universal-title">Success!</h2>
+        </div>
+        <p>{forModal}</p>
+        <button className="ok-button" onClick={handleCloseSuccessModal}>
+          OK
+        </button>
+      </Modal>
+    </form>
   );
 };
 
-export default SignupForm;
+export default Register;
