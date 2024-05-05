@@ -169,7 +169,7 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleLogin}>
+        <div>
           <div className="background-container"></div>
           <nav className="navbar">
             <div className="logo-container">
@@ -204,40 +204,47 @@ const App = () => {
               {register ? (
                 <SignUp />
               ) : (
-                <div>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Email"
-                      value={email}
-                      onChange={handleEmailChange}
-                    />
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                    />
-                    {loginError && <p className="login-error">{loginError}</p>}
-                  </div>
+                <form onSubmit={handleLogin}>
+                  <div className="register-info">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Email"
+                        value={email}
+                        onChange={handleEmailChange}
+                      />
+                      <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={handlePasswordChange}
+                      />
+                      {loginError && (
+                        <p className="login-error">{loginError}</p>
+                      )}
+                    </div>
 
-                  <button className="login" type="submit" disabled={isLoading}>
-                    {isLoading ? <div className="loader"></div> : "Login"}
-                  </button>
+                    <button
+                      className="login"
+                      type="submit"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <div className="loader"></div> : "Login"}
+                    </button>
 
-                  <div>
-                    <p>
-                      Don't have an account?{" "}
-                      <span
-                        className="register-link"
-                        onClick={handleRegisterLinkClick}
-                      >
-                        Click here
-                      </span>
-                    </p>
-                  </div>
+                    <div>
+                      <p>
+                        Don't have an account?{" "}
+                        <span
+                          className="register-link"
+                          onClick={handleRegisterLinkClick}
+                        >
+                          Click here
+                        </span>
+                      </p>
+                    </div>
 
-                  {/* <p className="developer">
+                    {/* <p className="developer">
                     Developed and Maintained by: <br />
                     <a
                       href="https://www.facebook.com/malabutejustin"
@@ -248,11 +255,12 @@ const App = () => {
                     </a>
                     Version 1.0
                   </p> */}
-                </div>
+                  </div>
+                </form>
               )}
             </div>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );

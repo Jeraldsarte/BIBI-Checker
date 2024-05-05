@@ -50,7 +50,7 @@ api.post("/add", async (req, res) => {
 
     // Validate user input (e.g., using a validation library)
 
-    const transaction = await db.sequelize.transaction(); // Start a transaction
+    // const transaction = await db.sequelize.transaction(); // Start a transaction
 
     try {
       const result = await db.sequelize.query(
@@ -63,7 +63,7 @@ api.post("/add", async (req, res) => {
             username,
             password,
           },
-          transaction, // Pass the transaction object
+          // transaction, // Pass the transaction object
         }
       );
 
@@ -88,9 +88,9 @@ api.post("/add", async (req, res) => {
         res.send({ error: false, message: "Employee added successfully!" });
       }
 
-      await transaction.commit(); // Commit the transaction if successful
+      // await transaction.commit(); // Commit the transaction if successful
     } catch (err) {
-      await transaction.rollback(); // Rollback the transaction on error
+      // await transaction.rollback(); // Rollback the transaction on error
       console.error("Error adding employee:", err);
       res.send({
         error: true,
